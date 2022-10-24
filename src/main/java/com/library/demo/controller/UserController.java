@@ -1,5 +1,6 @@
 package com.library.demo.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -20,17 +21,22 @@ public class UserController {
 
 	@Autowired
 	UserService userService;
-	
+
 	@GetMapping("/list")
-	public ResponseEntity<List<User>> getElenco() {
+	public ResponseEntity<Object> getElenco() {
 		try {
-			return new ResponseEntity<List<User>>(userService.getAllUsers(), HttpStatus.OK);
-		} catch (Exception e) {
-			return new ResponseEntity<List<User>>((List<User>) null, HttpStatus.INTERNAL_SERVER_ERROR);
+
+			List<User> users = new ArrayList<User>();
+			userService.getAllUsers().forEach(users::add);
+			return new ResponseEntity<Object>(users, HttpStatus.OK);
+		}
+
+		catch (Exception e) {
+			return new ResponseEntity<Object>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
 	}
-   
+
 	@PostMapping("/create")
 	public ResponseEntity<Object> createUser(@Valid @RequestBody User user) {
 
